@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="sk">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Jednoduché úlohy</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <h1>Úlohy</h1>
+
+    <form id="new-task-form" class="new-task-form" autocomplete="off">
+      <input id="new-task-input" placeholder="Pridať novú úlohu..." />
+      <button type="submit">Pridať</button>
+    </form>
+
+    <div class="controls">
+      <div class="filters">
+        <button data-filter="all" class="active">Všetky</button>
+        <button data-filter="active">Aktívne</button>
+        <button data-filter="done">Hotové</button>
+      </div>
+      <div class="actions">
+        <button id="clear-completed">Vymazať hotové</button>
+      </div>
+    </div>
+
+    <ul id="task-list" class="task-list"></ul>
+
+    <footer class="footer">
+      <span id="task-count">0 úloh</span>
+    </footer>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

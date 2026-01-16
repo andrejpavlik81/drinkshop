@@ -8,32 +8,61 @@
 </head>
 <body>
   <main class="app">
-    <h1>Úlohy</h1>
+    <header class="app-header">
+      <h1>Úlohy</h1>
+      <nav class="tabs">
+        <button id="tab-tasks" class="tab-button active">Úlohy</button>
+        <button id="tab-stats" class="tab-button">Štatistiky</button>
+      </nav>
+    </header>
 
-    <form id="new-task-form" class="new-task-form" autocomplete="off">
-      <input id="new-task-input" placeholder="Pridať novú úlohu..." />
-      <input id="new-task-creator" placeholder="Kto zadal (voliteľné)" />
-      <button type="submit">Pridať</button>
-    </form>
+    <!-- Tasks section -->
+    <section id="tasks-section">
+      <form id="new-task-form" class="new-task-form" autocomplete="off">
+        <input id="new-task-input" placeholder="Pridať novú úlohu..." />
+        <input id="new-task-creator" placeholder="Kto zadal (voliteľné)" />
+        <button type="submit">Pridať</button>
+      </form>
 
-    <div class="controls">
-      <div class="filters">
-        <button data-filter="all" class="active">Všetky</button>
-        <button data-filter="active">Aktívne</button>
-        <button data-filter="done">Hotové</button>
+      <div class="controls">
+        <div class="filters">
+          <button data-filter="all" class="active">Všetky</button>
+          <button data-filter="active">Aktívne</button>
+          <button data-filter="done">Hotové</button>
+        </div>
+        <div class="actions">
+          <button id="clear-completed">Vymazať hotové</button>
+        </div>
       </div>
-      <div class="actions">
-        <button id="clear-completed">Vymazať hotové</button>
+
+      <ul id="task-list" class="task-list"></ul>
+
+      <footer class="footer">
+        <span id="task-count">0 úloh</span>
+      </footer>
+    </section>
+
+    <!-- Stats section -->
+    <section id="stats-section" class="hidden">
+      <div class="stats-header">
+        <label for="stats-range">Zobraziť dni:</label>
+        <select id="stats-range">
+          <option value="7">Posledných 7 dní</option>
+          <option value="14" selected>Posledných 14 dní</option>
+          <option value="30">Posledných 30 dní</option>
+          <option value="0">Všetky dni</option>
+        </select>
+        <button id="refresh-stats">Aktualizovať</button>
       </div>
-    </div>
-
-    <ul id="task-list" class="task-list"></ul>
-
-    <footer class="footer">
-      <span id="task-count">0 úloh</span>
-    </footer>
+      <div class="chart-wrap">
+        <canvas id="completed-chart" width="800" height="300"></canvas>
+      </div>
+      <p class="stats-note">Graf zobrazuje počet úloh, ktoré boli označené ako hotové podľa dátumu vyriešenia (lokálny čas prehliadača).</p>
+    </section>
   </main>
 
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

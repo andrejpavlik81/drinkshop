@@ -1,4 +1,4 @@
-// Jednoduché todo (localStorage) s evidenciou zadávateľa a vyriešiteľa
+// Jednoduché todo (localStorage) s evidenciou zadávateľa, vyriešiteľa a timestampov
 const STORAGE_KEY = 'simple_todos_v1';
 
 let tasks = [];
@@ -41,6 +41,15 @@ function save() {
   localStorage.setItem(STORAGE_KEY, JSON.stringify(tasks));
 }
 
+function formatDate(iso) {
+  if (!iso) return '';
+  try {
+    return new Date(iso).toLocaleString();
+  } catch (e) {
+    return iso;
+  }
+}
+
 function render() {
   el.list.innerHTML = '';
   const visible = tasks.filter(t => {
@@ -75,14 +84,16 @@ function render() {
 
     const meta = document.createElement('div');
     meta.className = 'meta';
-    const createdByText = t.creator ? `Zadal: ${escapeHtml(t.creator)}` : 'Zadal: -';
-    let completedText = '';
+    const creatorText = t.creator ? escapeHtml(t.creator) : '-';
+    const createdAtText = formatDate(t.createdAt);
+    let metaHtml = `Zadal: ${creatorText} <span class="sep">•</span> Zadané: ${createdAtText}`;
     if (t.done) {
       const who = t.completedBy ? escapeHtml(t.completedBy) : '-';
-      const at = t.completedAt ? `, ${new Date(t.completedAt).toLocaleString()}` : '';
-      completedText = ` <span class="sep">•</span> Vyriešil: ${who}${at}`;
+      const at = t.completedAt ? formatDate(t.completedAt) : '';
+      metaHtml += ` <span class="sep">•</span> Vyriešil: ${who}`;
+      if (at) metaHtml += ` <span class="sep">•</span> Vyriešené: ${at}`;
     }
-    meta.innerHTML = `${createdByText}${completedText}`;
+    meta.innerHTML = metaHtml;
 
     content.appendChild(title);
     content.appendChild(meta);
@@ -140,7 +151,12 @@ function toggleDone(id, isChecked) {
     t.completedBy = who ? who.trim() : '';
     t.completedAt = new Date().toISOString();
   } else {
-    // uncheck -> clear completed info
+    // uncheck -> clear completed info (but keep createdAt)
+    if (!confirm('Označiť ako neza hotové? Informácie o vyriešení sa vymažú.')) {
+      // revert checkbox visually
+      render();
+      return;
+    }
     t.done = false;
     t.completedBy = '';
     t.completedAt = '';
@@ -165,13 +181,14 @@ function openEditDialog(id) {
   if (newCreator === null) return; // canceled
   t.text = newText.trim() || t.text;
   t.creator = newCreator.trim();
-  // ak je úloha označená ako hotová, daj možnosť upraviť aj vyriešeného
+  // ak je úloha označená ako hotová, daj možnosť upraviť aj vyriešeného a čas
   if (t.done) {
     const newCompletedBy = prompt('Kto úlohu vyriešil?', t.completedBy || '');
     if (newCompletedBy !== null) {
       t.completedBy = newCompletedBy.trim();
       if (!t.completedAt) t.completedAt = new Date().toISOString();
     }
+    // možnosť upraviť čas dokončenia (ľahké riešenie: ak chceš, môžeme pridať picker)
   }
   save();
   render();
